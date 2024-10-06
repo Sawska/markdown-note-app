@@ -15,8 +15,11 @@ public:
         
     }
 
-    std::vector<Position> calculate_valid_moves(Board&) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         return {};  
+    }
+    std::string serialize() const override {
+        return ".";  
     }
 };
 

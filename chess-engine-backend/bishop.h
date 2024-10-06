@@ -16,7 +16,7 @@ public:
         return true;
     }
 
-    std::vector<Position> calculate_valid_moves(Board& board) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         std::vector<Position> valid_moves;
         
         for (int i = 1; i < 8; ++i) {
@@ -26,6 +26,9 @@ public:
             if (position.x - i >= 0 && position.y + i < 8) valid_moves.push_back(Position(position.x - i, position.y + i)); 
         }
         return valid_moves;
+    }
+    std::string serialize() const override {
+        return color ? "B" : "b"; 
     }
 };
 

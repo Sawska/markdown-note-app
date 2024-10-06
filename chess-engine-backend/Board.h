@@ -16,6 +16,18 @@ public:
         
         board.resize(8, std::vector<ChessPiece*>(8, nullptr));
     }
+    std::string serialize() const {
+        std::string serialized_board;
+
+        for (const auto& row : board) {
+            for (const auto& piece : row) {
+                serialized_board += piece->serialize();
+            }
+            serialized_board += "\n"; 
+        }
+
+        return serialized_board;
+    }
 
     ~Board() {
         
@@ -58,7 +70,31 @@ public:
     ChessPiece* get_piece_at(Position position) {
         return board[position.y][position.x];
     }
-    
+
+    std::vector<std::vector<ChessPiece*>> get_board() {
+        return board;
+    }
+    const std::vector<std::vector<ChessPiece*>>& get_board() const {
+        return board;
+    }
+     std::vector<Move> get_valid_moves(bool color) {
+    std::vector<Move> valid_moves;
+
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[i].size(); j++) {
+            ChessPiece* piece = board[i][j];
+            if (piece && piece->get_color() == color) {
+                std::vector<Position> moves = piece->calculate_valid_moves(*this);
+                for (const auto& move : moves) {
+                    valid_moves.push_back(Move({i, j}, move));  
+                }
+            }
+        }
+    }
+
+    return valid_moves;
+}
+
 
 };
 

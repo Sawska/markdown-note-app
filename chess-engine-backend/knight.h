@@ -14,7 +14,7 @@ public:
         return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
     }
 
-    std::vector<Position> calculate_valid_moves(Board& board) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         std::vector<Position> valid_moves;
         int knight_moves[8][2] = {
             {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
@@ -28,6 +28,9 @@ public:
             }
         }
         return valid_moves;
+    }
+    std::string serialize() const override {
+        return color ? "N" : "n"; 
     }
 };
 

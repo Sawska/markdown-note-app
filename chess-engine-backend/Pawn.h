@@ -34,7 +34,7 @@ public:
         return false;
     }
 
-    std::vector<Position> calculate_valid_moves(Board& board) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         std::vector<Position> moves;
         Position current_position = this->get_position();
         int direction = (color == true) ? 1 : -1;
@@ -62,6 +62,9 @@ public:
         }
 
         return moves;
+    }
+    std::string serialize() const override {
+        return color ? "P" : "p"; 
     }
 };
 

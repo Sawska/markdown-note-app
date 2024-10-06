@@ -41,6 +41,15 @@ void ChessEngine::initialize_board() {
     board.set_piece_at(new King(false, Position(4, 7)), Position(4, 7));
 }
 
+void ChessEngine::undo_move() {
+        if (!move_history.empty()) {
+            MoveHistory last_move = move_history.top();
+            move_history.pop();
+            board.set_piece_at(last_move.from, board.get_piece_at(last_move.to));  
+            board.set_piece_at(last_move.to, last_move.capturedPiece);  
+        }
+    }
+
 
 
 bool ChessEngine::make_move(Position from, Position to) {
@@ -133,4 +142,79 @@ bool ChessEngine::is_checkmate(bool color) {
         }
     }
     return true;
+}
+
+int ChessEngine::minimax(Board board, int depth, bool maximizingPlayer, int alpha, int beta) {
+    if (depth == 0 || is_checkmate(maximizingPlayer)) {
+        return evaluate_board(board);
+    }
+
+    if (maximizingPlayer) {
+        int maxEval = -INF;
+        for (Move move : board.get_valid_moves(current_turn)) {
+            make_move(move.from,move.to);
+            int eval = minimax(board, depth - 1, false, alpha, beta);
+            undo_move();
+            maxEval = std::max(maxEval, eval);
+            alpha = std::max(alpha, eval);
+            if (beta <= alpha)
+                break;
+        }
+        return maxEval;
+    } else {
+        int minEval = INF;
+        for (Move move : board.get_valid_moves(current_turn)) {
+            make_move(move.from,move.to);
+            int eval = minimax(board, depth - 1, true, alpha, beta);
+            undo_move();
+            minEval = std::min(minEval, eval);
+            beta = std::min(beta, eval);
+            if (beta <= alpha)
+                break;
+        }
+        return minEval;
+    }
+}
+
+
+Position ChessEngine::best_move() {
+    int best_value = -INF;
+    Position best_move;
+    
+    for (Move move : board.get_valid_moves(current_turn)) {
+        make_move(move.from, move.to);
+        int move_value = minimax(board, 3, false, -INF, INF);
+        undo_move();
+
+        if (move_value > best_value) {
+            best_value = move_value;
+            best_move = move.to;
+        }
+    }
+
+    return best_move;
+}
+
+int ChessEngine::evaluate_board(const Board& board) {
+    int score = 0;
+    for (const auto& row : board.get_board()) {
+        for (const auto& piece : row) {
+            if (piece->color) {
+                score += piece_value(piece);  
+            } else {
+                score -= piece_value(piece);  
+            }
+        }
+    }
+    return score;
+}
+
+int ChessEngine::piece_value(const ChessPiece* piece) {
+    if (dynamic_cast<const Pawn*>(piece)) return 1;
+    if (dynamic_cast<const Knight*>(piece)) return 3;
+    if (dynamic_cast<const Bishop*>(piece)) return 3;
+    if (dynamic_cast<const Rook*>(piece)) return 5;
+    if (dynamic_cast<const Queen*>(piece)) return 9;
+    if (dynamic_cast<const King*>(piece)) return 1000;  
+    return 0;
 }

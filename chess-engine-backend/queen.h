@@ -17,7 +17,7 @@ public:
         return rook.is_move_valid(new_position, board) || bishop.is_move_valid(new_position, board);
     }
 
-    std::vector<Position> calculate_valid_moves(Board& board) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         std::vector<Position> valid_moves;
         Rook rook(color, position);
         Bishop bishop(color, position);
@@ -29,6 +29,9 @@ public:
         valid_moves.insert(valid_moves.end(), bishop_moves.begin(), bishop_moves.end());
 
         return valid_moves;
+    }
+    std::string serialize() const override {
+        return color ? "Q" : "q"; 
     }
 };
 

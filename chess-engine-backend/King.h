@@ -14,7 +14,7 @@ public:
         return (dx <= 1 && dy <= 1);
     }
 
-    std::vector<Position> calculate_valid_moves(Board& board) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         std::vector<Position> valid_moves;
         for (int dx = -1; dx <= 1; ++dx) {
             for (int dy = -1; dy <= 1; ++dy) {
@@ -25,6 +25,9 @@ public:
             }
         }
         return valid_moves;
+    }
+    std::string serialize() const override {
+        return color ? "K" : "k";  
     }
 };
 

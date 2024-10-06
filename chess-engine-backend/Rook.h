@@ -23,7 +23,7 @@ public:
         return false;
     }
 
-    std::vector<Position> calculate_valid_moves(Board& board) override {
+    std::vector<Position> calculate_valid_moves(const Board& board) override {
         std::vector<Position> moves;
         Position current_position = this->get_position();
 
@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    bool is_path_blocked(Position from, Position to, Board& board) {
+    bool is_path_blocked(Position from, Position to, const Board& board) {
         int dx = to.x - from.x;
         int dy = to.y - from.y;
 
@@ -59,6 +59,9 @@ private:
         }
 
         return false;
+    }
+    std::string serialize() const override {
+        return color ? "R" : "r";
     }
 };
 

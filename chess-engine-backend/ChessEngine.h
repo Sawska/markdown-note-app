@@ -14,10 +14,25 @@
 #include "Rook.h"
 #include "NullPiece.h"
 
+const int INF = 1000000;
+
+#include <stack>
+
+struct MoveHistory {
+    Position from;
+    Position to;
+    ChessPiece* capturedPiece;
+
+    MoveHistory(Position f, Position t, ChessPiece* captured)
+        : from(f), to(t), capturedPiece(captured) {}
+};
+
+
 class ChessEngine {
 private:
     Board board;
     bool current_turn;
+    std::stack<MoveHistory> move_history;
 
 public:
     ChessEngine();
@@ -28,6 +43,11 @@ public:
     void switch_turn();
     bool is_checkmate(bool color);
     bool is_under_attack(Position position, bool color);
+    int minimax(Board board, int depth, bool maximizingPlayer, int alpha, int beta);
+    Position best_move();
+    int piece_value(const ChessPiece* piece);
+    int evaluate_board(const Board& board);
+    void undo_move();
 };
 
 #endif //CHESS_ENGINE_H
