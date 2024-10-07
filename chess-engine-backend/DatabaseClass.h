@@ -9,11 +9,12 @@
 
 using namespace sw::redis;
 
+
 class Database {
 public:
-    ChessEngine& engine;  
+    
 
-    Database(ChessEngine& engine) : engine(engine) {} 
+    Database() : {} 
 
     void initialize_game(int game_id, const std::string& white_player, const std::string& black_player);
     void update_board(int game_id);

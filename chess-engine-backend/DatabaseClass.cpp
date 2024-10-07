@@ -1,10 +1,13 @@
 #include "DatabaseClass.h"
 
+const std::string VAR = []{ std::ifstream myfile("data.txt"); std::string var; if (myfile.is_open()) std::getline(myfile, var); return var; }();
+
+
 
 
 void Database::initialize_game(int game_id, const std::string& white_player, const std::string& black_player) {
     auto redis = Redis("");
-    
+
     redis.hset("game:" + std::to_string(game_id), "white_player", white_player);
     redis.hset("game:" + std::to_string(game_id), "black_player", black_player);
     redis.hset("game:" + std::to_string(game_id), "status", "ongoing");
@@ -12,35 +15,35 @@ void Database::initialize_game(int game_id, const std::string& white_player, con
 }
 
 void Database::update_board(int game_id) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
     
     std::string board_state = engine.board.serialize(); 
     redis.hset("game:" + std::to_string(game_id), "board_state", board_state);
 }
 
 void Database::add_move(int game_id, const std::string& move) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
     
     
     redis.rpush("game:" + std::to_string(game_id) + ":moves", move);
 }
 
 void Database::add_move_history(int game_id, const std::string& move) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
     
     
     redis.rpush("game:" + std::to_string(game_id) + ":move_history", move);
 }
 
 void Database::update_current_turn(int game_id, bool is_white_turn) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
     
     
     redis.hset("game:" + std::to_string(game_id), "is_white_turn", is_white_turn ? "1" : "0");
 }
 
 void Database::update_status(int game_id) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
 
     std::string status;
     if (engine.is_checkmate(true)) {
@@ -55,7 +58,7 @@ void Database::update_status(int game_id) {
 }
 
 void Database::update_checks(int game_id) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
     
     bool is_white_in_check = engine.is_under_attack(engine.board.get_king_position(true), true);
     bool is_black_in_check = engine.is_under_attack(engine.board.get_king_position(false), false);
@@ -65,7 +68,7 @@ void Database::update_checks(int game_id) {
 }
 
 void Database::update_checkmates(int game_id) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
 
     bool is_white_in_checkmate = engine.is_checkmate(true);
     bool is_black_in_checkmate = engine.is_checkmate(false);
@@ -75,7 +78,7 @@ void Database::update_checkmates(int game_id) {
 }
 
 Database::GameData* Database::get_game(int game_id) {
-    auto redis = Redis("tcp://127.0.0.1:6379");
+    auto redis = Redis(VAR);
 
     
     auto game_data = redis.hgetall<std::string>("game:" + std::to_string(game_id));
