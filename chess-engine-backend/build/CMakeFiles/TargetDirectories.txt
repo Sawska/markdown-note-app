@@ -1,0 +1,3 @@
+/Users/alexanderkorzh/Desktop/coding/chess-engine/chess-engine-backend/build/CMakeFiles/chess-engine-backend.dir
+/Users/alexanderkorzh/Desktop/coding/chess-engine/chess-engine-backend/build/CMakeFiles/edit_cache.dir
+/Users/alexanderkorzh/Desktop/coding/chess-engine/chess-engine-backend/build/CMakeFiles/rebuild_cache.dir

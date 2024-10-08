@@ -3,7 +3,8 @@
 
 #include <vector>
 #include "Position.h"
-#include "ChessPiece.h"
+#include "chessPiece.h"
+#include "King.h"
 
 class ChessPiece;
 
@@ -94,6 +95,19 @@ public:
 
     return valid_moves;
 }
+
+    Position get_king_position(bool color) {
+        for(int i =0;i<8;i++)
+        {
+            for(int j =0;j<8;j++)
+            {
+                if(dynamic_cast<King*>(board[i][j])->color == color)
+                {
+                    return Position(i,j);
+                }
+            }
+        }
+    }
 
 
 };

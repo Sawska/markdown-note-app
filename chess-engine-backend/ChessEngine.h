@@ -30,11 +30,11 @@ struct MoveHistory {
 
 class ChessEngine {
 private:
-    Board board;
-    bool current_turn;
     std::stack<MoveHistory> move_history;
 
 public:
+    bool current_turn;
+    Board board;
     ChessEngine();
 
     void initialize_board();

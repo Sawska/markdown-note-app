@@ -6,6 +6,7 @@
 #include "Board.h"
 #include "DatabaseClass.h"
 #include <cstdlib>
+#include "Position.h"
 
 
 class Server {

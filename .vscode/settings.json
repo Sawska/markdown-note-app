@@ -55,5 +55,6 @@
         "list": "cpp",
         "map": "cpp",
         "stack": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/Users/alexanderkorzh/Desktop/coding/chess-engine/chess-engine-backend"
 }

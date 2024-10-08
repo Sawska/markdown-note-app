@@ -1,13 +1,15 @@
 #include "DatabaseClass.h"
+#include <fstream> 
 
-const std::string VAR = []{ std::ifstream myfile("data.txt"); std::string var; if (myfile.is_open()) std::getline(myfile, var); return var; }();
-
-
-
+const std::string VAR = []{
+    std::ifstream myfile("data.txt");
+    std::string var;
+    if (myfile.is_open()) std::getline(myfile, var);
+    return var;
+}();
 
 void Database::initialize_game(int game_id, const std::string& white_player, const std::string& black_player) {
     auto redis = Redis("");
-
     redis.hset("game:" + std::to_string(game_id), "white_player", white_player);
     redis.hset("game:" + std::to_string(game_id), "black_player", black_player);
     redis.hset("game:" + std::to_string(game_id), "status", "ongoing");
@@ -16,35 +18,27 @@ void Database::initialize_game(int game_id, const std::string& white_player, con
 
 void Database::update_board(int game_id) {
     auto redis = Redis(VAR);
-    
-    std::string board_state = engine.board.serialize(); 
+    std::string board_state = engine.board.serialize(); // Ensure engine is properly declared and initialized
     redis.hset("game:" + std::to_string(game_id), "board_state", board_state);
 }
 
 void Database::add_move(int game_id, const std::string& move) {
     auto redis = Redis(VAR);
-    
-    
     redis.rpush("game:" + std::to_string(game_id) + ":moves", move);
 }
 
 void Database::add_move_history(int game_id, const std::string& move) {
     auto redis = Redis(VAR);
-    
-    
     redis.rpush("game:" + std::to_string(game_id) + ":move_history", move);
 }
 
 void Database::update_current_turn(int game_id, bool is_white_turn) {
     auto redis = Redis(VAR);
-    
-    
     redis.hset("game:" + std::to_string(game_id), "is_white_turn", is_white_turn ? "1" : "0");
 }
 
 void Database::update_status(int game_id) {
     auto redis = Redis(VAR);
-
     std::string status;
     if (engine.is_checkmate(true)) {
         status = "white_checkmated";
@@ -53,36 +47,30 @@ void Database::update_status(int game_id) {
     } else {
         status = "ongoing";
     }
-
     redis.hset("game:" + std::to_string(game_id), "status", status);
 }
 
 void Database::update_checks(int game_id) {
     auto redis = Redis(VAR);
-    
     bool is_white_in_check = engine.is_under_attack(engine.board.get_king_position(true), true);
     bool is_black_in_check = engine.is_under_attack(engine.board.get_king_position(false), false);
-    
     redis.hset("game:" + std::to_string(game_id), "is_white_in_check", is_white_in_check ? "1" : "0");
     redis.hset("game:" + std::to_string(game_id), "is_black_in_check", is_black_in_check ? "1" : "0");
 }
 
 void Database::update_checkmates(int game_id) {
     auto redis = Redis(VAR);
-
     bool is_white_in_checkmate = engine.is_checkmate(true);
     bool is_black_in_checkmate = engine.is_checkmate(false);
-    
     redis.hset("game:" + std::to_string(game_id), "is_white_in_checkmate", is_white_in_checkmate ? "1" : "0");
     redis.hset("game:" + std::to_string(game_id), "is_black_in_checkmate", is_black_in_checkmate ? "1" : "0");
 }
 
 Database::GameData* Database::get_game(int game_id) {
     auto redis = Redis(VAR);
+    std::unordered_map<std::string, std::string> game_data;
+    redis.hgetall("game:" + std::to_string(game_id), std::inserter(game_data, game_data.end()));
 
-    
-    auto game_data = redis.hgetall<std::string>("game:" + std::to_string(game_id));
-    
     if (!game_data.empty()) {
         GameData* game = new GameData();
         game->game_id = game_id;
@@ -96,12 +84,11 @@ Database::GameData* Database::get_game(int game_id) {
         game->is_white_in_checkmate = game_data["is_white_in_checkmate"] == "1";
         game->is_black_in_checkmate = game_data["is_black_in_checkmate"] == "1";
 
-    
-        auto move_history = redis.lrange<std::string>("game:" + std::to_string(game_id) + ":moves", 0, -1);
+        std::vector<std::string> move_history;
+        redis.lrange("game:" + std::to_string(game_id) + ":moves", 0, -1, std::back_inserter(move_history));
         game->move_history.assign(move_history.begin(), move_history.end());
-        
+
         return game;
     }
-
     return nullptr;
 }

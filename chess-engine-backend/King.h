@@ -1,7 +1,7 @@
 #ifndef KING_H
 #define KING_H
 
-#include "ChessPiece.h"
+#include "chessPiece.h"
 
 class King : public ChessPiece {
 public:

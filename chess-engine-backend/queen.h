@@ -1,9 +1,9 @@
 #ifndef QUEEN_H
 #define QUEEN_H
 
-#include "ChessPiece.h"
+#include "chessPiece.h"
 #include "Rook.h"
-#include "Bishop.h"
+#include "bishop.h"
 
 class Queen : public ChessPiece {
 public:

@@ -1,4 +1,8 @@
 #include "Server.h"
+#include <random>
+
+std::random_device rd;
+std::mt19937 PRNG(rd());
 
 void Server::set_up_routes() {
     
@@ -6,7 +10,7 @@ void Server::set_up_routes() {
         engine.initialize_board();  
         id += 1;  
 
-        engines.push_back(ChessEngine);
+        engines.push_back(ChessEngine()); 
         std::string player1;
         std::string player2;
         if (PRNG() > PRNG()) {

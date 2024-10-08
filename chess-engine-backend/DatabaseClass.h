@@ -14,7 +14,7 @@ class Database {
 public:
     
 
-    Database() : {} 
+    Database() {} 
 
     void initialize_game(int game_id, const std::string& white_player, const std::string& black_player);
     void update_board(int game_id);
@@ -43,6 +43,7 @@ private:
 
     std::vector<GameData> games; 
     GameData* get_game(int game_id); 
+    ChessEngine engine; 
 };
 
 #endif // DATABASECLASS_H

@@ -1,7 +1,7 @@
 #ifndef NULL_PIECE_H
 #define NULL_PIECE_H
 
-#include "ChessPiece.h"
+#include "chessPiece.h"
 
 class NullPiece : public ChessPiece {
 public:

@@ -3,8 +3,7 @@
 
 #include <vector>
 #include "Board.h"
-#include "Position.h"
-
+class Board;
 
 class Move {
 public:

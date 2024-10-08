@@ -1,5 +1,7 @@
 #include <iostream>
+#include "Server.h"
 
 int main(int, char**){
-    std::cout << "Hello, from chess-engine-backend!\n";
+    Server server;
+    server.run_server();
 }
